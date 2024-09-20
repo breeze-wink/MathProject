@@ -2,22 +2,18 @@ package com.example.math.model;
 
 
 public class User {
-    private String account;
+    private final String email;
+    private final String account;
     private String password;
-    private Type type;
 
-    public User(String account, String password, Type type) {
+    public User(String account, String password, String email) {
         this.account = account;
         this.password = password;
-        this.type = type;
+        this.email = email;
     }
 
     public String getAccount() {
         return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
     }
 
     public String getPassword() {
@@ -28,12 +24,8 @@ public class User {
         this.password = password;
     }
 
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
+    public String getEmail() {
+        return email;
     }
 
     public enum Type {
