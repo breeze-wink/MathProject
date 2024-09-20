@@ -1,9 +1,11 @@
 package com.example.math.service;
 
 import com.example.math.model.User;
+import jakarta.annotation.PreDestroy;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -13,7 +15,7 @@ import java.util.*;
 @Service
 public class UserService {
 
-    private List<User> users;
+    private Map<String, User> users;
     private Path execPath;
 
     public UserService() {
@@ -21,14 +23,32 @@ public class UserService {
         readAccounts();
     }
 
+    @PreDestroy
+    public void onDestroy(){
+        saveAccount();
+    }
+    public void saveAccount()
+    {
+        Path filePath = execPath.resolve("account.csv");
+        try (BufferedWriter writer = Files.newBufferedWriter(filePath)) {
+            for (User user : users.values()) {
+                writer.write(String.format("%s,%s,%s\n", user.getAccount(), user.getPassword(), user.getEmail()));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to write to file", e);
+        }
+    }
+
     // 校验用户的账号和密码
     public User validateUser(String account, String password) {
-        for (User user : users) {
-            if (account.equals(user.getAccount()) && password.equals(user.getPassword())) {
-                return user;  // 返回 User 对象
-            }
+        User user = users.get(account);
+
+        if (user != null && user.getPassword().equals(password))
+        {
+            return user;
         }
-        return null;  // 如果用户不存在或密码不匹配，返回 null
+
+        return null;
     }
 
 
@@ -36,12 +56,7 @@ public class UserService {
     private void readAccounts() {
         Path filePath = execPath.resolve("account.csv");
 
-        Map<String, User.Type> string2type = new HashMap<>();
-        string2type.put("小学", User.Type.PrimarySchool);
-        string2type.put("初中", User.Type.MiddleSchool);
-        string2type.put("高中", User.Type.HighSchool);
-
-        users = new ArrayList<>();
+        users = new HashMap<>();
 
         try (BufferedReader reader = Files.newBufferedReader(filePath)) {
             String line;
@@ -50,11 +65,10 @@ public class UserService {
                 if (parts.length >= 3) {
                     String account = parts[0];
                     String password = parts[1];
-                    String typeStr = parts[2];
-                    User.Type type = string2type.get(typeStr);
-                    if (type != null) {
-                        users.add(new User(account, password, type));
-                    }
+                    String email = parts[2];
+
+                    users.put(account, new User(account, password, email));
+
                 }
             }
         } catch (IOException e) {
@@ -65,4 +79,5 @@ public class UserService {
     private void getRunningPath() {
         execPath = Paths.get("").toAbsolutePath();
     }
+
 }
