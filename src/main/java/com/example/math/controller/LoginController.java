@@ -21,9 +21,9 @@ public class LoginController {
     public LoginResponse login(@RequestBody LoginRequest request) {
         User user = userService.validateUser(request.getAccount(), request.getPassword());
         if (user != null) {  // 如果 user 不为空，表示验证成功
-            return new LoginResponse(true, "登录成功", user.getType().toString());
+            return new LoginResponse(true, "登录成功");
         } else {  // 否则返回登录失败的响应
-            return new LoginResponse(false, "用户名或密码错误", null);
+            return new LoginResponse(false, "用户名或密码错误");
         }
     }
 
@@ -57,12 +57,10 @@ class LoginRequest {
 class LoginResponse {
     private final boolean success;
     private final String message;
-    private final String schoolType;
 
-    public LoginResponse(boolean success, String message, String schoolType) {
+    public LoginResponse(boolean success, String message) {
         this.success = success;
         this.message = message;
-        this.schoolType = schoolType;
     }
 
     public boolean isSuccess() {
@@ -73,7 +71,4 @@ class LoginResponse {
         return message;
     }
 
-    public String getSchoolType() {
-        return schoolType;
-    }
 }
