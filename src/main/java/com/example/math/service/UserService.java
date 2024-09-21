@@ -80,4 +80,21 @@ public class UserService {
         execPath = Paths.get("").toAbsolutePath();
     }
 
+    public boolean userExist(String userName){
+        return users.get(userName) == null;
+    }
+
+    public boolean checkPasswordLegal(String password) {
+        if (password == null || password.length() < 6 || password.length() > 10) {
+            return false;
+        }
+
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{6,10}$";
+
+        return password.matches(regex);
+    }
+
+    public void putUser(String userName, String password, String email){
+        users.put(userName, new User(userName, password, email));
+    }
 }
