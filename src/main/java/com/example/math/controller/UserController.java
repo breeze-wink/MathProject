@@ -48,6 +48,9 @@ public class UserController {
         if (!userService.checkPasswordCorrect(request.getUserName(), request.getOldPassword())) {
             return new ResetPasswordResponse(false, "旧密码不正确");
         }
+        if (request.getOldPassword().equals(request.getNewPassword())) {
+            return new ResetPasswordResponse(false, "新密码不能与旧密码相同");
+        }
         if (userService.checkPasswordIllegal(request.getNewPassword())){
             return new ResetPasswordResponse(false, "密码不合法");
         }
