@@ -4,7 +4,6 @@ import com.example.math.dto.*;
 import com.example.math.model.User;
 import com.example.math.service.EmailService;
 import com.example.math.service.UserService;
-import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -36,7 +35,7 @@ public class UserController {
         if (userService.userExist(request.getUserName())) {
             return new ConfirmRegisterResponse(false, "用户名已注册");
         }
-        if (!userService.checkPasswordLegal(request.getPassword())) {
+        if (userService.checkPasswordIlLegal(request.getPassword())) {
             return new ConfirmRegisterResponse(false, "密码不合法");
         }
         if (!request.getPassword().equals(request.getConfirmPassword())){
@@ -51,7 +50,7 @@ public class UserController {
         if (userService.checkPasswordCorrect(request.getUserName(), request.getOldPassword())) {
             return new ResetPasswordResponse(false, "旧密码不正确");
         }
-        if (!userService.checkPasswordLegal(request.getNewPassword())){
+        if (userService.checkPasswordIlLegal(request.getNewPassword())){
             return new ResetPasswordResponse(false, "密码不合法");
         }
         if (!request.getNewPassword().equals(request.getConfirmNewPassword())){
