@@ -97,4 +97,12 @@ public class UserService {
     public void putUser(String userName, String password, String email){
         users.put(userName, new User(userName, password, email));
     }
+
+    public boolean checkPasswordCorrect(String userName, String password) {
+        return users.get(userName).getPassword().equals(password);
+    }
+
+    public void modifyPassword(String userName, String newPassword) {
+        users.get(userName).setPassword(newPassword);
+    }
 }

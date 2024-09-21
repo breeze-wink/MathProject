@@ -36,7 +36,7 @@ public class UserController {
         if (userService.userExist(request.getUserName())) {
             return new ConfirmRegisterResponse(false, "用户名已注册");
         }
-        if (userService.checkPasswordLegal(request.getPassword())) {
+        if (!userService.checkPasswordLegal(request.getPassword())) {
             return new ConfirmRegisterResponse(false, "密码不合法");
         }
         if (!request.getPassword().equals(request.getConfirmPassword())){
@@ -46,6 +46,20 @@ public class UserController {
         userService.putUser(request.getUserName(), request.getPassword(), request.getEmail());
         return new ConfirmRegisterResponse(true, "注册成功");
     }
+    @PostMapping("/resetPassword")
+    public ResetPasswordResponse resetPassword(@RequestBody ResetPasswordRequest request){
+        if (userService.checkPasswordCorrect(request.getUserName(), request.getOldPassword())) {
+            return new ResetPasswordResponse(false, "旧密码不正确");
+        }
+        if (!userService.checkPasswordLegal(request.getNewPassword())){
+            return new ResetPasswordResponse(false, "密码不合法");
+        }
+        if (!request.getNewPassword().equals(request.getConfirmNewPassword())){
+            return new ResetPasswordResponse(false, "两次新密码输入不同");
+        }
 
+        userService.modifyPassword(request.getUserName(), request.getNewPassword());
+        return new ResetPasswordResponse(true, "修改成功");
+    }
 }
 
