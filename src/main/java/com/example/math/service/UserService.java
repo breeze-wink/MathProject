@@ -84,7 +84,7 @@ public class UserService {
         return users.get(userName) != null;
     }
 
-    public boolean checkPasswordIlLegal(String password) {
+    public boolean checkPasswordIllegal(String password) {
         if (password == null || password.length() < 6 || password.length() > 10) {
             return true;
         }

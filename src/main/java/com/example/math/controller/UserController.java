@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserService userService;
-    private final EmailService emailService;
     @Autowired
     public UserController(UserService userService, EmailService emailService) {
         this.userService = userService;
-        this.emailService = emailService;
     }
 
     // 处理登录请求
@@ -35,7 +33,7 @@ public class UserController {
         if (userService.userExist(request.getUserName())) {
             return new ConfirmRegisterResponse(false, "用户名已注册");
         }
-        if (userService.checkPasswordIlLegal(request.getPassword())) {
+        if (userService.checkPasswordIllegal(request.getPassword())) {
             return new ConfirmRegisterResponse(false, "密码不合法");
         }
         if (!request.getPassword().equals(request.getConfirmPassword())){
@@ -47,10 +45,10 @@ public class UserController {
     }
     @PostMapping("/resetPassword")
     public ResetPasswordResponse resetPassword(@RequestBody ResetPasswordRequest request){
-        if (userService.checkPasswordCorrect(request.getUserName(), request.getOldPassword())) {
+        if (!userService.checkPasswordCorrect(request.getUserName(), request.getOldPassword())) {
             return new ResetPasswordResponse(false, "旧密码不正确");
         }
-        if (userService.checkPasswordIlLegal(request.getNewPassword())){
+        if (userService.checkPasswordIllegal(request.getNewPassword())){
             return new ResetPasswordResponse(false, "密码不合法");
         }
         if (!request.getNewPassword().equals(request.getConfirmNewPassword())){
