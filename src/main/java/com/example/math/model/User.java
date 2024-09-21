@@ -28,9 +28,4 @@ public class User {
         return email;
     }
 
-    public enum Type {
-        PrimarySchool,
-        MiddleSchool,
-        HighSchool
-    }
 }
