@@ -19,11 +19,12 @@ public abstract class QuestionGenerator {
 
     public abstract java.util.List<Question> generateQuestion(int num);
 
-    public String buildExpression(java.util.List<String> operands, java.util.List<Character> ops) {
+    public String buildExpression(List<String> operands, List<Character> ops) {
         if (operands.isEmpty()) {
             return "";
         }
 
+        // 用于存储操作数和操作符的栈
         List<String> expressionParts = new ArrayList<>();
         expressionParts.add(operands.get(0));
 
@@ -31,16 +32,23 @@ public abstract class QuestionGenerator {
             String operator = String.valueOf(ops.get(i - 1));
             String operand = operands.get(i);
 
-            // 决定是否在上一个操作数、操作符和当前操作数之间添加括号
             boolean addParentheses = random.nextBoolean();
 
-            if (addParentheses) {
-                // 移除最后一个操作数
+            if (addParentheses && expressionParts.size() >= 2) {
+                // 从栈中移除最近的操作数和操作符
                 String lastOperand = expressionParts.remove(expressionParts.size() - 1);
-                // 将上一个操作数、操作符和当前操作数组合并，并用括号包裹
-                String subExpression = "(" + lastOperand + operator + operand + ")";
-                // 将新的子表达式添加回列表
+                String lastOperator = expressionParts.remove(expressionParts.size() - 1);
+                String secondLastOperand = expressionParts.remove(expressionParts.size() - 1);
+
+                // 创建只包含最近两个操作数和操作符的子表达式，并用括号包围
+                String subExpression = "(" + secondLastOperand + lastOperator + lastOperand + ")";
+
+                // 将子表达式添加回栈中
                 expressionParts.add(subExpression);
+
+                // 添加当前的操作符和操作数
+                expressionParts.add(operator);
+                expressionParts.add(operand);
             } else {
                 // 简单地添加操作符和操作数
                 expressionParts.add(operator);
@@ -58,6 +66,7 @@ public abstract class QuestionGenerator {
     }
 
 
+
     public String generateOperand(boolean isSpecial, int level) {
         int operand = random.nextInt(100) + 1;
         if (isSpecial) {
@@ -69,7 +78,7 @@ public abstract class QuestionGenerator {
                 }
                 int sqrtOperand = squares[random.nextInt(squares.length)];
                 if (random.nextBoolean()) {
-                    return "(" + operand + ")^2";
+                    return operand + "^2";
                 } else {
                     return "sqrt(" + sqrtOperand + ")";
                 }
@@ -84,15 +93,17 @@ public abstract class QuestionGenerator {
                     angles = new int[]{30, 45, 60, 90};
                 }
                 int angle = angles[random.nextInt(angles.length)];
-                return trigFunction + "(" + angle + ")";
+                // 添加度数符号 °
+                return trigFunction + "(" + angle + "°)";
             }
         }
         return String.valueOf(operand);
     }
 
+
     protected double evaluateExpression(String expression) {
         // 将角度转换为弧度，并替换表达式中的角度值
-        Pattern pattern = Pattern.compile("(sin|cos|tan)\\((\\d+)\\)");
+        Pattern pattern = Pattern.compile("(sin|cos|tan)\\((\\d+)°\\)");
         Matcher matcher = pattern.matcher(expression);
         StringBuffer sb = new StringBuffer();
         while (matcher.find()) {
@@ -110,4 +121,5 @@ public abstract class QuestionGenerator {
                 .build();
         return exp.evaluate();
     }
+
 }
