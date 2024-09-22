@@ -1,46 +1,47 @@
 package com.example.math.model;
 
 public class Question {
-    public Question(int number, String content, String answer, String[] choices) {
-        this.number = number;
-        this.content = content;
-        this.answer = answer;
-        this.choices = choices;
-    }
-    private int number;
-    private String content;
-    private String answer;
-    String[] choices;
+  public Question(int number, String content, String answer, String[] choices) {
+    this.number = number;
+    this.content = content;
+    this.answer = answer;
+    this.choices = choices;
+  }
 
-    public int getNumber() {
-        return number;
-    }
+  private int number;
+  private String content;
+  private String answer;
+  String[] choices;
 
-    public void setNumber(int number) {
-        this.number = number;
-    }
+  public int getNumber() {
+    return number;
+  }
 
-    public String getContent() {
-        return content;
-    }
+  public void setNumber(int number) {
+    this.number = number;
+  }
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+  public String getContent() {
+    return content;
+  }
 
-    public String getAnswer() {
-        return answer;
-    }
+  public void setContent(String content) {
+    this.content = content;
+  }
 
-    public void setAnswer(String answer) {
-        this.answer = answer;
-    }
+  public String getAnswer() {
+    return answer;
+  }
 
-    public String[] getChoices() {
-        return choices;
-    }
+  public void setAnswer(String answer) {
+    this.answer = answer;
+  }
 
-    public void setChoices(String[] choices) {
-        this.choices = choices;
-    }
+  public String[] getChoices() {
+    return choices;
+  }
+
+  public void setChoices(String[] choices) {
+    this.choices = choices;
+  }
 }

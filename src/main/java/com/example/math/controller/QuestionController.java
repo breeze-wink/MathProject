@@ -12,14 +12,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/question")
 public class QuestionController {
-    private QuestionService questionService;
+  private QuestionService questionService;
 
-    @Autowired
-    public QuestionController(QuestionService questionService){
-        this.questionService = questionService;
-    }
-    @PostMapping("/generate")
-    public QuestionGenerateResponse generateQuestion(@RequestBody QuestionGenerateRequest request) {
-        return new QuestionGenerateResponse(QuestionService.generateQuestions(request.getType(), request.getNumber()));
-    }
+  @Autowired
+  public QuestionController(QuestionService questionService) {
+    this.questionService = questionService;
+  }
+
+  @PostMapping("/generate")
+  public QuestionGenerateResponse generateQuestion(@RequestBody QuestionGenerateRequest request) {
+    return new QuestionGenerateResponse(
+        QuestionService.generateQuestions(request.getType(), request.getNumber()));
+  }
 }
