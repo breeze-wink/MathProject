@@ -56,22 +56,31 @@ public class UserService {
 
     users = new HashMap<>();
 
-    try (BufferedReader reader = Files.newBufferedReader(filePath)) {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        String[] parts = line.split(",");
-        if (parts.length >= 3) {
-          String account = parts[0];
-          String password = parts[1];
-          String email = parts[2];
+    try {
+      if (!Files.exists(filePath)) {
+        Files.createFile(filePath);
+      }
 
-          users.put(account, new User(account, password, email));
+      try (BufferedReader reader = Files.newBufferedReader(filePath)) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+          String[] parts = line.split(",");
+          if (parts.length >= 3) {
+            String account = parts[0].trim();
+            String password = parts[1].trim();
+            String email = parts[2].trim();
+
+            users.put(account, new User(account, password, email));
+          } else {
+            System.err.println("无效的行格式: " + line);
+          }
         }
       }
     } catch (IOException e) {
-      throw new RuntimeException("Failed to open file", e);
+      throw new RuntimeException("读取或创建 account.csv 文件失败", e);
     }
   }
+
 
   private void getRunningPath() {
     execPath = Paths.get("").toAbsolutePath();
